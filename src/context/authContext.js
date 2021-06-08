@@ -1,6 +1,7 @@
 import createDataContext from "./createDataContext";
 import trackerApi from '../api/tracker';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { navigate } from '../navigationRef';
 
 // Will be called by react directly, when we call dispatch function
 // return some new state
@@ -28,6 +29,8 @@ const signup = (dispatch) => {
             const response = await trackerApi.post(`/signup`, { email, password })
             await AsyncStorage.setItem('token', response.data.token);
             dispatch({ type: 'signup', payload: response.data.token })
+
+            navigate('TrackList');
         } catch (error) {
             dispatch({ type: 'add_error', payload: 'Something went wrong with sign up' })
         }
