@@ -7,6 +7,7 @@ import { Context as LocationContext } from '../context/locationContext';
 
 import Map from '../components/Map';
 import useLocation from '../hooks/useLocation';
+import TrackForm from '../components/TrackForm';
 
 const TrackCreateScreen = ({ isFocused }) => {
 
@@ -28,6 +29,7 @@ const TrackCreateScreen = ({ isFocused }) => {
                     </Text>
                     : null
             }
+            <TrackForm />
         </SafeAreaView>
     );
 }
