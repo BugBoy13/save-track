@@ -1,12 +1,61 @@
-import React from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import '../_mockLocation';
+import { Accuracy, requestForegroundPermissionsAsync, watchPositionAsync } from 'expo-location';
+import React, { useEffect, useState, useContext } from 'react'
+import { StyleSheet } from 'react-native'
+import { Text } from 'react-native-elements';
+import { SafeAreaView } from 'react-navigation';
+import { Context as LocationContext } from '../context/locationContext';
+
+import Map from '../components/Map';
 
 const TrackCreateScreen = () => {
+
+    const { addLocation } = useContext(LocationContext);
+    const [error, setError] = useState(null);
+
+    const startWatching = async () => {
+
+        try {
+            const { granted } = await requestForegroundPermissionsAsync();
+
+            if (!granted) {
+                throw new Error('Location permission not granted');
+            }
+
+            await watchPositionAsync({
+                accuracy: Accuracy.BestForNavigation,
+                timeInterval: 1000,
+                distanceInterval: 10,
+
+            }, (location) => {
+                addLocation(location);
+            });
+        }
+        catch (e) {
+            setError(e);
+        }
+    }
+
+    useEffect(() => {
+        startWatching();
+    }, [])
+
     return (
-        <Text
-            style={{ fontSize: 48 }}>
-            TrackCreateScreen
-        </Text>
+        <SafeAreaView
+            forceInset={{ top: 'always' }} >
+            <Text
+                h2 >
+                Create a track
+            </Text>
+            <Map />
+            {
+                error ?
+                    <Text>
+                        Please enable location services
+                    </Text>
+                    : null
+            }
+        </SafeAreaView>
     );
 }
 
